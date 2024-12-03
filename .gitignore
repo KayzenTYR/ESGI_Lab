@@ -1,0 +1,3 @@
+EncryptRust/target
+EncryptRust/Cargo.lock
+EncryptRust/aes_keys.txt

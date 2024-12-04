@@ -17,7 +17,7 @@ pub fn display_severage_msgs(msgs: &[&str]) {
 pub fn pick_up_input(msg: &str) -> String {
     let mut input = String::new();
 
-    println!("{}", msg);
+    print!("{}", msg);
 
     let _ = io::stdout().flush();
 
@@ -66,4 +66,38 @@ pub fn pick_up_input_i32(msg: &str) -> i32 {
         Ok(r) => r,
         Err(_) => -1
     };
+}
+
+pub fn select_option(options: &[(i32, &str)], prompt: &str, error_limit: usize) -> String {
+    display_severage_msgs(&[
+        prompt,
+        "Choose an option:",
+        &options
+            .iter()
+            .map(|(opt, size)| format!("{}. {}", opt, size))
+            .collect::<Vec<_>>()
+            .join("\n"),
+    ]);
+
+    let mut choose = "";
+    let mut error_count = 0;
+
+    loop {
+        let user_input = pick_up_input_i32("Enter an option here:");
+
+        if let Some(&(_, option)) = options.iter().find(|&&(opt, _)| opt == user_input) {
+            choose = option;
+            break;
+        } else {
+            display_single_msg("Wrong option...");
+            error_count += 1;
+        }
+
+        if error_count >= error_limit {
+            display_single_msg("Too many errors, exiting process...");
+            break;
+        }
+    }
+
+    return choose.to_string();
 }

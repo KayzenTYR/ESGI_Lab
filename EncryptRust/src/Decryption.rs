@@ -1,15 +1,6 @@
-use crate::{Common_Crypt, File_Manager, Interaction_User, Utils};
+use rsa::{Pkcs1v15Encrypt, RsaPrivateKey};
 
-use rsa::{pkcs1::{EncodeRsaPrivateKey, EncodeRsaPublicKey}, Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey};
-use rand::rngs::OsRng;
-
-use aes_gcm::{
-    aead::{Aead, KeyInit}, Aes128Gcm, Aes256Gcm, Key, Nonce
-};
-
-use chacha20::cipher::{KeyIvInit, StreamCipher};
-use chacha20::ChaCha20;
-use sha2::digest::generic_array::GenericArray;
+use crate::{Common_Crypt::{self, aes_crypt_content}, File_Manager, Interaction_User};
 
 fn rsa_decrypt_content(content: &Vec<u8>, key: RsaPrivateKey) -> Vec<u8> {
     match key
@@ -22,9 +13,22 @@ fn rsa_decrypt_content(content: &Vec<u8>, key: RsaPrivateKey) -> Vec<u8> {
         }
 }
 
+fn decrypt (
+    path: &str,
+    content: &Vec<u8>,
+    crypt_content: fn(&Vec<u8>, &[u8], bool) -> Vec<u8>,
+    extension: &str
+)
+{
+    let (_, key) = Interaction_User::ask_path_to_file("key");
+    
+    let ciphertext = crypt_content(content, &key, false);
+
+    File_Manager::create(&format!("{}.{}", path, extension), ciphertext);
+}
 
 fn aes_decrypt (path: &str, content: &Vec<u8>) {
-
+    decrypt(path, content, aes_crypt_content, "daes");
 }
 
 fn rsa_decrypt (path: &str, content: &Vec<u8>) {
@@ -32,7 +36,7 @@ fn rsa_decrypt (path: &str, content: &Vec<u8>) {
 }
 
 fn chacha20_decrypt (path: &str, content: &Vec<u8>) {
-
+    decrypt(path, content, aes_crypt_content, "dchacha20");
 }
 
 pub fn start (path: &str, content: &Vec<u8>) {

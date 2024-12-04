@@ -1,4 +1,5 @@
-use std::io::{self, Read, Write};
+use std::io::{self, Write};
+use crate::File_Manager;
 
 pub fn display_single_msg(msg: &str) {
     println!("{}", msg);
@@ -30,36 +31,36 @@ pub fn pick_up_input(msg: &str) -> String {
 }
 
 
-pub fn pick_up_inputs(msgs: &[&str]) -> Vec<String> {
-    if msgs.len() == 0 {
-        // throw an error
-    }
-    let mut inputs = Vec::new();
-    let mut input;
-    let mut index = 0;
-    let mut msg;
+// pub fn pick_up_inputs(msgs: &[&str]) -> Vec<String> {
+//     if msgs.len() == 0 {
+//         // throw an error
+//     }
+//     let mut inputs = Vec::new();
+//     let mut input;
+//     let mut index = 0;
+//     let mut msg;
 
-    loop {
-        print!("Enter input (or type 'exit' to finish): ");
-        if msgs.len() == 1 {
-            msg = msgs[0];
-        } else {
-            msg = msgs[index];
-        }
+//     loop {
+//         print!("Enter input (or type 'exit' to finish): ");
+//         if msgs.len() == 1 {
+//             msg = msgs[0];
+//         } else {
+//             msg = msgs[index];
+//         }
         
-        input = pick_up_input(msg);
+//         input = pick_up_input(msg);
         
-        if input.eq_ignore_ascii_case("exit") || input.is_empty() {
-            break;
-        }
+//         if input.eq_ignore_ascii_case("exit") || input.is_empty() {
+//             break;
+//         }
 
-        inputs.push(input);
+//         inputs.push(input);
 
-        index = (index + 1) % msgs.len();
-    }
+//         index = (index + 1) % msgs.len();
+//     }
     
-    return inputs;
-}
+//     return inputs;
+// }
 
 pub fn pick_up_input_i32(msg: &str) -> i32 {
     return match pick_up_input(msg).parse::<i32>() {
@@ -100,4 +101,32 @@ pub fn select_option(options: &[(i32, &str)], prompt: &str, error_limit: usize) 
     }
 
     return choose.to_string();
+}
+
+pub fn ask_path_to_file (msg: &str) -> (String, Vec<u8>) {
+    let mut file_path ;
+    let mut content;
+    let mut error_nb = 0;
+
+    display_single_msg(&format!("Choose the {} that will be process", msg));
+
+    loop {
+
+        file_path = pick_up_input("Input the path :");
+    
+        content = File_Manager::get_content(&file_path); 
+        
+        if content.is_empty() {
+            error_nb += 1
+        }  else {
+            break
+        }
+        
+        if error_nb == 3 {
+            display_single_msg("To much errors, exiting process ...");
+            break
+        }
+    }
+
+    (file_path, content)
 }

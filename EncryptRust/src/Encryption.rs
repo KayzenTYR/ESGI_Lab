@@ -121,7 +121,6 @@ fn encrypt_with_algorithm<F>(
     if File_Manager::create(&format!("{}.{}", path, extension), ciphertext) {
         File_Manager::create(&format!("{}_key.{}", path, extension), key.clone());
 
-        // Step 4: Record key hash in a dedicated file
         let key_hash = Utils::from_vec_to_str(&Common_Crypt::hash(key.clone()));
         match File_Manager::add_line(&format!("./keys/{}_keys.txt", extension), &key_hash) {
             Ok(_) => {}
@@ -158,9 +157,15 @@ fn rsa_encrypt (path: &str, content: &Vec<u8>) {
     println!("Encrypted data: {:?}", encrypted_data);
 
     if File_Manager::create(&format!("{}.rsa", path), encrypted_data) {
-        File_Manager::create(&format!("{}_key.rsa", path), public_key.clone().to_pkcs1_der().expect("Failed to encode key").as_bytes().to_vec());
+        let public_key_vec = public_key.to_pkcs1_der().expect("Failed to encode key").as_bytes().to_vec();
+        let private_key_vec = private_key.to_pkcs1_der().expect("Failed to encode key").as_bytes().to_vec();
 
-        match File_Manager::add_line("./keys/rsa_keys.txt", &Utils::from_vec_to_str(&Common_Crypt::hash(private_key.clone().to_pkcs1_der().expect("Failed to encode key").as_bytes().to_vec()))) {
+        println!("Private key {:?}", public_key_vec);
+        println!("Public key {:?}", public_key_vec);
+
+        File_Manager::create(&format!("{}_key.rsa", path), public_key_vec.clone());
+
+        match File_Manager::add_line("./keys/rsa_keys.txt", &Utils::from_vec_to_str(&Common_Crypt::hash(private_key_vec.clone()))) {
             Ok(_) => {},
             Err(_) => { println!("Error : cant add a line to the file");}
         };

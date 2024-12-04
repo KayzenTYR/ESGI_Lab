@@ -2,13 +2,6 @@ pub fn from_vec_to_str (vec: &Vec<u8>) -> String {
     String::from_utf8_lossy(vec).to_string()
 }
 
-pub fn str_to_usize(input: &str) -> usize {
-    match input.trim().parse::<usize>() {
-        Ok(value) => value,
-        Err(_) => 0, // Return None if parsing fails
-    }
-}
-
 pub fn string_to_usize(input: String) -> usize {
     match input.trim().parse::<usize>() {
         Ok(value) => value,

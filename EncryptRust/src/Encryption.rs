@@ -29,38 +29,6 @@ fn ask_aes_size() -> usize {
             3,
         )    
     )
-     
-    // let msgs = [
-    //     "Select the Aes key sizes : ",
-    //     "Choose an option : ",
-    //     "1. 128",
-    //     "3. 256"
-    // ];
-    // Interaction_User::display_severage_msgs(&msgs);
-    
-    // let mut aes_key_size = 0;
-    // let mut error_nb = 0;
-    
-    // loop {
-    
-    //     match Interaction_User::pick_up_input_i32("Enter a option here :") {
-    //         1 => aes_key_size = 16,
-    //         2 => aes_key_size = 32,
-    //         _ => {
-    //             Interaction_User::display_single_msg("Wrong option ...");
-    //             error_nb +=1;
-    //         } 
-    //     }
-
-    //     if error_nb == 3 {
-    //         Interaction_User::display_single_msg("To much errors, exiting process ...");
-    //         break;
-    //     } else if aes_key_size != 0 {
-    //         break;
-    //     }
-    // }
-
-    // return aes_key_size as usize;
 }
 
 fn ask_rsa_size() -> usize {
@@ -71,37 +39,6 @@ fn ask_rsa_size() -> usize {
             3,
         )
     )
-    // let msgs = [
-    //     "Select the Aes key sizes : ",
-    //     "Choose an option : ",
-    //     "1. 1024",
-    //     "3. 2048"
-    // ];
-    // Interaction_User::display_severage_msgs(&msgs);
-    
-    // let mut rsa_key_size = 0;
-    // let mut error_nb = 0;
-    
-    // loop {
-    
-    //     match Interaction_User::pick_up_input_i32("Enter a option here :") {
-    //         1 => rsa_key_size = 1024,
-    //         2 => rsa_key_size = 2048,
-    //         _ => {
-    //             Interaction_User::display_single_msg("Wrong option ...");
-    //             error_nb +=1;
-    //         } 
-    //     }
-
-    //     if error_nb == 3 {
-    //         Interaction_User::display_single_msg("To much errors, exiting process ...");
-    //         break;
-    //     } else if rsa_key_size != 0 {
-    //         break;
-    //     }
-    // }
-
-    // return rsa_key_size as usize;
 }
 
 fn encrypt_with_algorithm<F>(

@@ -9,7 +9,7 @@ use sha2::{Sha256, Digest};
 
 use rand::{rngs::OsRng, RngCore};
 
-use crate::Interaction_User;
+use crate::{Common_Crypt, File_Manager, Interaction_User, Utils};
 
 pub fn aes_crypt_content(content: &Vec<u8>, key: &[u8], encrypt: bool) -> Vec<u8> {
     fn process_cipher<C: Aead>(
@@ -28,6 +28,14 @@ pub fn aes_crypt_content(content: &Vec<u8>, key: &[u8], encrypt: bool) -> Vec<u8
                 eprintln!("Decryption failed!");
                 Vec::new()
             })
+        }
+    }
+
+    if !encrypt {
+        let key_hash = Utils::from_vec_to_str(&Common_Crypt::hash(key.to_vec()));
+
+        if !File_Manager::compare_lines_with_str("./keys/aes_keys.txt", &key_hash) {
+            return Vec::new();
         }
     }
     

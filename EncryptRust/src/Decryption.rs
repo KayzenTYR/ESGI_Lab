@@ -1,4 +1,4 @@
-use rsa::{Pkcs1v15Encrypt, RsaPrivateKey};
+use rsa::{pkcs1::DecodeRsaPrivateKey, Pkcs1v15Encrypt, RsaPrivateKey};
 
 use crate::{Common_Crypt::{self, aes_crypt_content}, File_Manager, Interaction_User};
 
@@ -23,6 +23,10 @@ fn decrypt (
     let (_, key) = Interaction_User::ask_path_to_file("key");
     
     let ciphertext = crypt_content(content, &key, false);
+    
+    if ciphertext.len() == 0 {
+        Interaction_User::display_single_msg("Key is not in the database");
+    }
 
     File_Manager::create(&format!("{}.{}", path, extension), ciphertext);
 }
@@ -32,7 +36,22 @@ fn aes_decrypt (path: &str, content: &Vec<u8>) {
 }
 
 fn rsa_decrypt (path: &str, content: &Vec<u8>) {
+    let (_, key) = Interaction_User::ask_path_to_file("key");
+    
+    match RsaPrivateKey::from_pkcs1_der(&key) {
+        Ok(r) => {
+            let ciphertext = rsa_decrypt_content(content, r);
 
+            if ciphertext.len() == 0 {
+                Interaction_User::display_single_msg("Key is not in the database");
+            }
+        
+            File_Manager::create(&format!("{}.drsa", path), ciphertext);
+        },
+        Err(e) => {
+            println!("Not a rsa keys : {}", e);
+        }
+    };
 }
 
 fn chacha20_decrypt (path: &str, content: &Vec<u8>) {

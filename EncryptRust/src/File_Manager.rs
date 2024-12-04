@@ -1,5 +1,5 @@
 use std::fs::{File, OpenOptions};
-use std::io::{self, Read, Write};
+use std::io::{self, BufRead, Read, Write};
 
 pub fn get_content(path: &str) -> Vec<u8> {
     let mut file = match File::open(path) {
@@ -43,4 +43,25 @@ pub fn add_line(file_path: &str, line: &str) -> io::Result<()> {
     writeln!(file, "{}", line)?;
 
     Ok(())
+}
+
+pub fn compare_lines_with_str(file_path: &str, target: &str) -> bool {
+    let file = match File::open(file_path) {
+        Ok(r) => r,
+        Err(e) => {
+            eprintln!("Failed to open file: {}", e);
+            return false
+        },
+    };
+
+    let lines = io::BufReader::new(file).lines();
+    for line in lines {
+        if let Ok(content) = line {
+            if content == target {
+                return true;
+            }
+        }
+    }
+
+    false
 }

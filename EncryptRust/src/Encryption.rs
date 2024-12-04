@@ -7,7 +7,7 @@ use aes_gcm::{
     aead::{Aead, KeyInit}, Aes128Gcm, Aes256Gcm, Key, Nonce
 };
 
-use chacha20::cipher::{KeyIvInit, StreamCipher};
+use chacha20::cipher::{self, KeyIvInit, StreamCipher};
 use chacha20::ChaCha20;
 
 fn rsa_encrypt_content(mut rng: OsRng, content: &Vec<u8>, key: RsaPublicKey) -> Vec<u8> {
@@ -163,22 +163,15 @@ fn rsa_encrypt (path: &str, content: &Vec<u8>) {
         println!("Private key {:?}", public_key_vec);
         println!("Public key {:?}", public_key_vec);
 
-        File_Manager::create(&format!("{}_key.rsa", path), public_key_vec.clone());
+        File_Manager::create(&format!("{}_key.rsa", path), private_key_vec);
 
-        match File_Manager::add_line("./keys/rsa_keys.txt", &Utils::from_vec_to_str(&Common_Crypt::hash(private_key_vec.clone()))) {
+        match File_Manager::add_line("./keys/rsa_keys.txt", &Utils::from_vec_to_str(&Common_Crypt::hash(public_key_vec))) {
             Ok(_) => {},
             Err(_) => { println!("Error : cant add a line to the file");}
         };
 
         println!("Find your new files to : {}", path);
     }
-
-    // Step 4: Decrypt the data using the private key
-    // let decrypted_data = private_key
-    //     .decrypt(Pkcs1v15Encrypt, &encrypted_data)
-    //     .expect("Failed to decrypt");
-
-    // println!("Decrypted data: {}", String::from_utf8_lossy(&decrypted_data));
 }
 
 fn chacha20_encrypt (path: &str, content: &Vec<u8>) {

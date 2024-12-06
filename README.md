@@ -1,7 +1,7 @@
 Tp Rust projet cryptographie 4eme années ESGI
 
 Participants :
-VALLADE Alan
+VALLADE Allan
 CHAMBRE Ryan
-Casagrande Michaël
+CASAGRANDE Michaël
 OUALI Mohamed
